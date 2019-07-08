@@ -6,10 +6,15 @@ const buttonStyle =  {display: 'inline', margin: '10px'}
 
 function App() {
   const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
   let ws = useRef(null);
   useEffect(() => {
-    const conn = new WebSocket(`ws://${window.location.hostname}:3000`)
+    const protocol = window.location.protocol === 'http:' ? 'ws:' : 'wss:';
+    const port = window.location.port ? `:${window.location.port}` : '';
+    const conn = new WebSocket(`${protocol}//${window.location.hostname}${port}`)
     conn.onmessage = ev => {
+      console.log(ev.data);
+      setIsRunning(JSON.parse(ev.data).status === 1)
       return setTime(JSON.parse(ev.data).time);
     }
     ws.current = conn;
@@ -17,7 +22,7 @@ function App() {
   const minutes = Math.floor((time/1000/60) << 0);
   const seconds = ((time % 60000) / 1000).toFixed(0);
   const secondsDisplay = (seconds < 10 ? '0' : '') + seconds;
-    
+  const textColor = minutes < 1 ? 'red' : minutes < 3 ? 'orange' : 'white';
   if (!ws) {
     return <div>can't connect...</div>
   }
@@ -30,7 +35,7 @@ function App() {
         crossorigin="anonymous"
       />
       <header className="App-header">
-        <div style={{ fontSize: '100px'}}>{minutes}:{secondsDisplay}</div>
+        <div style={{ fontSize: '300px', color: textColor}}>{minutes}:{secondsDisplay}</div>
         <div style={{display: 'inline-block'}}>
           <div style={buttonStyle}>
             <Button onClick={() => {
@@ -38,7 +43,9 @@ function App() {
             }}>Reset</Button>
           </div>
           <div style={buttonStyle}>
-            <Button onClick={() => ws.current.send('pause-toggle')}>Start // Resume</Button>
+            <Button onClick={() => ws.current.send('pause-toggle')}>
+              {isRunning ? 'Pause' : 'Go!'}
+            </Button>
           </div>
 
         </div>
