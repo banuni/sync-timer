@@ -8,8 +8,7 @@ function App() {
   const [time, setTime] = useState(0);
   let ws = useRef(null);
   useEffect(() => {
-    console.log(`ws://${window.location.hostname}`)
-    const conn = new WebSocket(`ws://${window.location.hostname}:8999`)
+    const conn = new WebSocket(`ws://${window.location.hostname}:3000`)
     conn.onmessage = ev => {
       return setTime(JSON.parse(ev.data).time);
     }

@@ -43,7 +43,7 @@ wss.on('connection', (ws) => {
     }
   })
 })
-server.listen(8999, () =>{
-  console.log("starter server!")
+server.listen(3000, () =>{
+  console.log("started ws server on :3000")
 })
 
