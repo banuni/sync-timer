@@ -41,7 +41,6 @@ wss.on('connection', (ws) => {
     } else {
       console.log("unknown message: " + message)
     }
-    ws.send("Wallak you ok you " + message)
   })
 })
 server.listen(8999, () =>{
