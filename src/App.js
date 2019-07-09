@@ -8,6 +8,7 @@ function App() {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   let ws = useRef(null);
+
   useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws:' : 'wss:';
     const port = window.location.port ? `:${window.location.port}` : '';

@@ -2,6 +2,7 @@
 const express = require('express');
 const path = require('path');
 const Stopwatch = require('timer-stopwatch');
+const WebSocket = require('ws');
 
 const app = express();
 const expressWs = require('express-ws')(app);
@@ -11,7 +12,16 @@ app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.ws('/', (ws, req) => {
-  timer.onTime(function (){ ws.send(JSON.stringify({time: timer.ms, status: timer.state}))})
+  timer.onTime(function (){
+    if(ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({time: timer.ms, status: timer.state}), function(error){
+        if(!error) {
+          return
+        }; 
+        console.log(error);
+      })
+    }
+  });
   ws.on('message', message => {
     if (message === 'reset') {
       timer.reset();
